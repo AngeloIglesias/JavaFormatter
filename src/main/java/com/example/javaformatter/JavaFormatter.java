@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile;
 public class JavaFormatter {
     private static JavaFormatter instance = null;
 
-    private boolean enabled = false;
+    private boolean enabled = true;
 
     // Private constructor to prevent instantiation
     private JavaFormatter() {}
