@@ -30,4 +30,13 @@
             implementationClass="com.example.CustomFormattingModelBuilder"
         />
     </extensions>
+
+    <actions>
+        <action id="JavaFormatterSettingsAction"
+                class="com.example.javaformatter.JavaFormatterSettingsAction"
+                text="Java Formatter Settings"
+                description="Open Java Formatter settings">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>
