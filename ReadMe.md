@@ -6,6 +6,16 @@ This plugin utilizes the JavaParser since it has the feature of "Lexical-Presevi
 To start formatting you need to select Code -> Reformat with JavaFormatter:
 ![img_3.png](img_3.png)
 
+Since this is a Prototype Formatting Rules have to be applied in code. Add them to the "FormattingRules" class and call them in "applyFormattingRules". If there are no rules the code remains untouched.
+
+Here is an example of the "addCommentsToPublicMethods" Rule.
+
+before:
+![img_5.png](img_5.png)
+
+after:
+![img_4.png](img_4.png)
+
 ### NOT WORKING (IntelliJ Default Formatter):
 To start formatting your code you need to press Ctrl+Alt+L (Windows/Linux) or Cmd+Option+L (Mac), otherwise nothing happens. 
 ![img.png](img.png)

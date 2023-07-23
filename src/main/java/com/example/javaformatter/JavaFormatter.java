@@ -1,12 +1,13 @@
 package com.example.javaformatter;
 
-import com.github.javaparser.ParseException;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiFile;
+
+import static com.example.javaformatter.FormattingRules.addCommentsToPublicMethods;
 
 /**
  * Class for reformatting the code
@@ -53,14 +54,22 @@ public class JavaFormatter {
         // Enable lexical preserving printing
         LexicalPreservingPrinter.setup(cu);
 
-        //Reformat code here:
-        String print = LexicalPreservingPrinter.print(cu);
+        String print = applyFormattingRules(cu);
 
         // Replace the file text with the formatted code
         //Use WriteCommandAction to ensure that this is run within a write action
         WriteCommandAction.runWriteCommandAction(file.getProject(), () ->
                 file.getViewProvider().getDocument().setText(print)
         );
+    }
+
+    private static String applyFormattingRules(CompilationUnit cu) {
+        // Apply formatting rules
+        addCommentsToPublicMethods(cu);
+
+        // Print the formatted code
+        String print = LexicalPreservingPrinter.print(cu);
+        return print;
     }
 
     public boolean isEnabled() {
