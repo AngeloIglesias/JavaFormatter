@@ -29,6 +29,5 @@
             language="JAVA"
             implementationClass="com.example.CustomFormattingModelBuilder"
         />
-        <configurable id="JavaFormatterConfigurable" displayName="JavaFormatter" instance="com.example.javaformatter.JavaFormatterConfigurable"/>
     </extensions>
 </idea-plugin>

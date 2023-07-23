@@ -16,13 +16,15 @@ import org.jetbrains.annotations.Nullable;
 
 public class CustomFormattingModelBuilder implements FormattingModelBuilder {
 
+    private JavaFormatter formatter = new JavaFormatter();
+
     @Override
     public @NotNull FormattingModel createModel(@NotNull FormattingContext formattingContext) {
         PsiElement element = formattingContext.getPsiElement();
         PsiFile file = element.getContainingFile();
 
         // Use the JavaFormatter instance
-        JavaFormatter.getInstance().format(file);
+        formatter.format(file);
 
         return FormattingModelProvider.createFormattingModelForPsiFile(file,
                 new CustomBlock(file.getNode(), Wrap.createWrap(WrapType.NONE, false),
