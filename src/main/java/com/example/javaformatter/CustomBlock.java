@@ -9,6 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Just an example for reformatting a block
+ */
 public class CustomBlock extends AbstractBlock {
     protected CustomBlock(@NotNull ASTNode node, @Nullable Wrap wrap, @Nullable Alignment alignment) {
         super(node, wrap, alignment);

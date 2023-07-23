@@ -3,6 +3,10 @@
 This plugin utilizes the JavaParser since it has the feature of "Lexical-Preseving Printing".
 
 ## Usage
+To start formatting you need to select Code -> Reformat with JavaFormatter:
+![img_3.png](img_3.png)
+
+### NOT WORKING (IntelliJ Default Formatter):
 To start formatting your code you need to press Ctrl+Alt+L (Windows/Linux) or Cmd+Option+L (Mac), otherwise nothing happens. 
 ![img.png](img.png)
 
@@ -18,5 +22,11 @@ The formatting aka. Lexical-Preseving Printing ist done in the class JavaFormatt
 A menu can be found under Tools -> Java Formatter Settings (see JavaFormatterSettingsAction class).
 ![img_1.png](img_1.png)
 
+The menus under Settings -> Tools -> JavaFormatter does not work for some reason.
+
 ## ToDo
 A Menu and Config File Import in Clang-Format or Jalopy style may be added via IntelliJs API (see the Clang-Format, GoogleFormat, or even Jalopy Plugin for an example).
+
+### Jalopy Comparison
+Um dieselbe Funktion von Jalopy zu erreichen, muss eine Aktion auf "on Save" registriert werden:
+![img_2.png](img_2.png)

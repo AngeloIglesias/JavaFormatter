@@ -14,6 +14,9 @@ import com.intellij.psi.codeStyle.CodeStyleSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * UNKNOWN??
+ */
 public class CustomFormattingModelBuilder implements FormattingModelBuilder {
 
     @Override

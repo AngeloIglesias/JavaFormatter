@@ -5,10 +5,13 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import com.intellij.psi.PsiFile;
 
+/**
+ * Class for reformatting the code
+ */
 public class JavaFormatter {
     private static JavaFormatter instance = null;
 
-    private boolean enabled = true;
+    private boolean enabled = false;
 
     // Private constructor to prevent instantiation
     private JavaFormatter() {}
