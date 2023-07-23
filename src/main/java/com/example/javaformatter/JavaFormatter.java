@@ -1,8 +1,11 @@
 package com.example.javaformatter;
 
+import com.github.javaparser.ParseException;
+import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiFile;
 
 /**
@@ -33,14 +36,31 @@ public class JavaFormatter {
             return;
         }
 
+        CompilationUnit cu;
+
+        System.out.println(file.getText()); //DEBUG
+
         // Parse the file with JavaParser
-        CompilationUnit cu = StaticJavaParser.parse(file.getText());
+        try {
+            // Versuchen, die Formatierung auszuführen
+            cu = StaticJavaParser.parse(file.getText());
+        } catch (ParseProblemException e) {
+            // Wrong Java Code as Input
+            System.err.println("Fehler beim Parsen des Codes: " + e.getMessage());
+            return;
+        }
 
         // Enable lexical preserving printing
         LexicalPreservingPrinter.setup(cu);
 
+        //Reformat code here:
+        String print = LexicalPreservingPrinter.print(cu);
+
         // Replace the file text with the formatted code
-        file.getViewProvider().getDocument().setText(LexicalPreservingPrinter.print(cu));
+        //Use WriteCommandAction to ensure that this is run within a write action
+        WriteCommandAction.runWriteCommandAction(file.getProject(), () ->
+                file.getViewProvider().getDocument().setText(print)
+        );
     }
 
     public boolean isEnabled() {
