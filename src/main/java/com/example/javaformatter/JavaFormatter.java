@@ -9,6 +9,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ForStmt;
 import com.github.javaparser.ast.stmt.TryStmt;
@@ -116,22 +117,23 @@ public class JavaFormatter {
     }
 
     public static String postProcessNode(Node node, int indentLevel) {
-        // If the node is a block statement, format it:
-        if (node instanceof BlockStmt
-                || node instanceof ClassOrInterfaceDeclaration
-                || node instanceof MethodDeclaration
-            // ... Add any other node types you wish to format
-        ) {
-            // Extract code for this node:
-            String code = node.toString();
+        // If the node is a grouping type, return an empty string:
+        if (node instanceof com.github.javaparser.ast.expr.Name
+                || node instanceof SimpleName
 
-            // Set indentation level:
-            return setIndentation(code, indentLevel);
+            // ... Add any other node types you wish to ignore
+        ) {
+            return "";
         }
 
-        // If the node is not a type you want to format, return it unchanged:
-        return "";
+        // Extract code for this node:
+        String code = node.toString();
+
+        // Set indentation level:
+        return setIndentation(code, indentLevel);
+
     }
+
 
 
     private static String setIndentation(String code, int indentLevel) {
