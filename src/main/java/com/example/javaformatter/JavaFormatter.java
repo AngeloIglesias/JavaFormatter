@@ -5,16 +5,17 @@ import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ForStmt;
-import com.github.javaparser.ast.stmt.TryStmt;
-import com.github.javaparser.ast.stmt.WhileStmt;
+import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for reformatting the code
@@ -73,7 +74,7 @@ public class JavaFormatter {
 
     private static String applyFormattingRules(CompilationUnit cu) {
 
-        //ToDo: Wie schaffe ich es meine CompilationUnit mittlels des LexicalPreservingPrinter Node für Node (rekursiv) zu durchlaufen?
+        // Format code:
         processNode(cu, 0);
 
         // Print the formatted code
@@ -82,11 +83,7 @@ public class JavaFormatter {
     }
 
     public static void processNode(Node node, int indentLevel) {
-        // Verarbeiten Sie den aktuellen Knoten...
-        if (node instanceof ClassOrInterfaceDeclaration classOrInterfaceNode) {
-
-            node.replace(Clazz.format(classOrInterfaceNode, indentLevel));
-        }
+        // ToDo: if instanceof special node -> Rule Zuordnung
 
         // Verarbeiten Sie nun alle Kinder des aktuellen Knotens
         for (Node child : node.getChildNodes()) {
@@ -108,23 +105,20 @@ public class JavaFormatter {
     }
 
     private static boolean shouldIncreaseIndent(Node node) {
-        return node instanceof BlockStmt
-                || node instanceof ArrayInitializerExpr
-                || node instanceof InitializerDeclaration
-                || node instanceof WhileStmt
-                || node instanceof ForStmt
-                || node instanceof TryStmt;
+        return node instanceof BlockStmt;
     }
 
     public static void postProcessNode(Node node, int indentLevel) {
-        // Extract code for this node:
-        String code = LexicalPreservingPrinter.print(node);
-
-        // Set indentation level:
-        String indentedCode = setIndentation(code, indentLevel);
-
-        // Replace node's code with indented code:
-        node.replace(StaticJavaParser.parse(indentedCode));
+        if (node instanceof BlockStmt blockStmtNode) {
+            List<Statement> formattedStatements = new ArrayList<>();
+            for (Statement stmt : blockStmtNode.getStatements()) {
+                String code = stmt.toString();
+                String indentedCode = setIndentation(code, indentLevel);
+                Statement indentedStatement = StaticJavaParser.parseStatement(indentedCode);
+                formattedStatements.add(indentedStatement);
+            }
+//            blockStmtNode.setStatements(new NodeList<>(formattedStatements));
+        }
     }
 
     private static String setIndentation(String code, int indentLevel) {
@@ -136,7 +130,9 @@ public class JavaFormatter {
 
         // Remove existing indentation and add desired indentation:
         for (int i = 0; i < lines.length; i++) {
-            lines[i] = lines[i].replaceAll("^\\s*", indentation);
+            if (!lines[i].trim().isEmpty()) {  //keine Leerzeilen "einrücken"
+                lines[i] = lines[i].replaceAll("^\\s*", indentation);
+            }
         }
 
         // Join lines back together:
