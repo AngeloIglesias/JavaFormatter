@@ -7,6 +7,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ForStmt;
@@ -47,8 +48,6 @@ public class JavaFormatter {
 
         CompilationUnit cu;
 
-        System.out.println(file.getText()); //DEBUG
-
         // Parse the file with JavaParser
         try {
             // Versuchen, die Formatierung auszuführen
@@ -73,28 +72,28 @@ public class JavaFormatter {
 
     private static String applyFormattingRules(CompilationUnit cu) {
 
-        //ToDo: Wie schaffe ich es meine CompilationUnit mittlels des LexicalPreservingPrinter Node für Node (rekursiv) zu durchlaufen?
-        processNode(cu, 0);
+        StringBuilder stringBuilder = new StringBuilder();
+        processNode(cu, 0, stringBuilder);
 
-        // Print the formatted code
-        String print = LexicalPreservingPrinter.print(cu);
-        return print;
+        String result = stringBuilder.toString();
+//        System.out.println(result); //DEBUG
+        return result;
     }
 
-    public static void processNode(Node node, int indentLevel) {
-        // Verarbeiten Sie den aktuellen Knoten...
-        if (node instanceof ClassOrInterfaceDeclaration classOrInterfaceNode) {
-
+    public static void processNode(Node node, int indentLevel, StringBuilder stringBuilder) {
+        /*if (node instanceof ClassOrInterfaceDeclaration classOrInterfaceNode) {
             node.replace(Clazz.format(classOrInterfaceNode, indentLevel));
         }
+        //ToDo: Implement all if-cases*/
 
-        // Verarbeiten Sie nun alle Kinder des aktuellen Knotens
         for (Node child : node.getChildNodes()) {
             int newIndentLevel = getIndentLevel(child, indentLevel);
-            processNode(child, newIndentLevel);
+            processNode(child, newIndentLevel, stringBuilder);
         }
 
-        postProcessNode(node, indentLevel);
+        String str = postProcessNode(node, indentLevel);
+        System.out.println(str);
+        stringBuilder.append(str);
     }
 
     /**
@@ -116,15 +115,12 @@ public class JavaFormatter {
                 || node instanceof TryStmt;
     }
 
-    public static void postProcessNode(Node node, int indentLevel) {
+    public static String postProcessNode(Node node, int indentLevel) {
         // Extract code for this node:
-        String code = LexicalPreservingPrinter.print(node);
+        String code = node.toString();
 
         // Set indentation level:
-        String indentedCode = setIndentation(code, indentLevel);
-
-        // Replace node's code with indented code:
-        node.replace(StaticJavaParser.parse(indentedCode));
+        return setIndentation(code, indentLevel);
     }
 
     private static String setIndentation(String code, int indentLevel) {
@@ -140,8 +136,21 @@ public class JavaFormatter {
         }
 
         // Join lines back together:
-        return String.join("\n", lines);
+        String newline = System.lineSeparator();
+        return String.join(newline, lines);
     }
+
+    private static Node parseCode(String code, Class<? extends Node> nodeType) {
+        if (nodeType == MethodDeclaration.class) {
+            return StaticJavaParser.parseMethodDeclaration(code);
+        } else if (nodeType == BlockStmt.class) {
+            return StaticJavaParser.parseBlock(code);
+        }
+        // TODO: Add more cases for other node types
+        throw new RuntimeException("Don't know how to parse nodes of type " + nodeType.getName());
+    }
+
+
 
     public boolean isEnabled() {
         return enabled;
