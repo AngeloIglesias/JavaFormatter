@@ -15,7 +15,8 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.26'
     annotationProcessor 'org.projectlombok:lombok:1.18.26'
 
-    implementation 'com.github.javaparser:javaparser-core:3.23.1'
+    implementation 'com.github.javaparser:javaparser-core:3.25.4' //latest version
+//    implementation 'com.github.javaparser:javaparser-core:3.5.7'
 }
 
 intellij {

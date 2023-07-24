@@ -7,7 +7,7 @@ import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinte
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiFile;
 
-import static com.example.javaformatter.FormattingRules.addCommentsToPublicMethods;
+import static com.example.javaformatter.FormattingRules.*;
 
 /**
  * Class for reformatting the code
@@ -65,7 +65,9 @@ public class JavaFormatter {
 
     private static String applyFormattingRules(CompilationUnit cu) {
         // Apply formatting rules
-        addCommentsToPublicMethods(cu);
+        formatPublicMethods(cu);
+//        formatLineComments(cu);
+        prettyPrint(cu);
 
         // Print the formatted code
         String print = LexicalPreservingPrinter.print(cu);
