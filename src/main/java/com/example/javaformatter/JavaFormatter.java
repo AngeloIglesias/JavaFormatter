@@ -1,5 +1,6 @@
 package com.example.javaformatter;
 
+import com.example.javaformatter.Formatter.Method;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -65,9 +66,11 @@ public class JavaFormatter {
 
     private static String applyFormattingRules(CompilationUnit cu) {
         // Apply formatting rules
-        formatPublicMethods(cu);
+/*        formatPublicMethods(cu);
 //        formatLineComments(cu);
-        prettyPrint(cu);
+        prettyPrint(cu);*/
+
+        Method.format(cu);
 
         // Print the formatted code
         String print = LexicalPreservingPrinter.print(cu);
