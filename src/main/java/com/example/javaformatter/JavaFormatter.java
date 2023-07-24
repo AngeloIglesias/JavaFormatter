@@ -116,12 +116,23 @@ public class JavaFormatter {
     }
 
     public static String postProcessNode(Node node, int indentLevel) {
-        // Extract code for this node:
-        String code = node.toString();
+        // If the node is a block statement, format it:
+        if (node instanceof BlockStmt
+                || node instanceof ClassOrInterfaceDeclaration
+                || node instanceof MethodDeclaration
+            // ... Add any other node types you wish to format
+        ) {
+            // Extract code for this node:
+            String code = node.toString();
 
-        // Set indentation level:
-        return setIndentation(code, indentLevel);
+            // Set indentation level:
+            return setIndentation(code, indentLevel);
+        }
+
+        // If the node is not a type you want to format, return it unchanged:
+        return "";
     }
+
 
     private static String setIndentation(String code, int indentLevel) {
         // Create indentation as a series of tabs:
