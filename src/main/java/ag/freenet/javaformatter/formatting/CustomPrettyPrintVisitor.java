@@ -52,6 +52,6 @@ public class CustomPrettyPrintVisitor extends PrettyPrintVisitor
 		super.visit(n, arg); // This will print the method declaration as usual.
 
 		// ToDo: JUST AN EXAMPLE
-		printer.println( /* THAT'S JUST NONESENSE */);
+		printer.println("/* THAT'S JUST NONESENSE */");
 	}
 }
