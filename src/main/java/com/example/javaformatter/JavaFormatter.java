@@ -27,7 +27,6 @@ import java.util.List;
  */
 public class JavaFormatter {
     private static JavaFormatter instance = null;
-
     private boolean enabled = true;
 
     // Private constructor to prevent instantiation
@@ -51,7 +50,15 @@ public class JavaFormatter {
             return;
         }
 
+        // Set the custom indentation settings in the parser configuration
+        ParserConfiguration parserConfiguration = new ParserConfiguration()
+                .setTabSize(4)
+                .setLexicalPreservationEnabled(true);
+        JavaParser javaParser = new JavaParser(parserConfiguration);
+
         CompilationUnit cu;
+        CompilationUnit cu2;
+        
 
 //        System.out.println(file.getText()); //DEBUG
 
@@ -70,28 +77,25 @@ public class JavaFormatter {
         String formattedCode = "";
 
         try {
-
-            // Set the custom indentation settings in the parser configuration
-            ParserConfiguration parserConfiguration = new ParserConfiguration()
-                    .setTabSize(4);
-            JavaParser javaParser = new JavaParser(parserConfiguration);
-
             // Parse the input Java code with the custom indentation settings
-            cu = javaParser.parse(cu.toString()).getResult().orElseThrow(() -> new ParseProblemException(new Exception())); //ToDo: Problems
+//            cu2 = javaParser.parse(cu.toString()).getResult().orElseThrow(() -> new ParseProblemException(new Exception())); //ToDo: Problems
+
+            System.out.println(cu.toString());
+
+            cu2 = javaParser.parse(file.getText()).getResult().orElseThrow(() -> new ParseProblemException(new Exception())); //ToDo: Problems
 
             // Setup the LexicalPreservingPrinter to preserve lexical formatting
-            LexicalPreservingPrinter.setup(cu);
+            LexicalPreservingPrinter.setup(cu2);
 
             // Get the method declaration node
-            MethodDeclaration methodDeclaration = cu.findFirst(MethodDeclaration.class).orElse(null);
+            MethodDeclaration methodDeclaration = cu2.findFirst(MethodDeclaration.class).orElse(null);
             if (methodDeclaration != null) {
                 // Change the indentation of the method body
                 methodDeclaration.getBody().get().findAll(MethodDeclaration.class).forEach(m ->
                         m.setBlockComment(" This is a block comment\n    "));
 
                 // Print the formatted code with preserved lexical formatting
-                formattedCode = LexicalPreservingPrinter.print(cu);
-                System.out.println(formattedCode);
+                formattedCode = LexicalPreservingPrinter.print(cu2);
             }
         } catch (ParseProblemException e) {
             e.printStackTrace();
