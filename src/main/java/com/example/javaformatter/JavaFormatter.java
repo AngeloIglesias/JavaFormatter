@@ -75,7 +75,7 @@ public class JavaFormatter {
                         for (int i = 0; i < statements.size(); i++) {
                             Statement stmt = statements.get(i);
                             Statement indentedStatement = StaticJavaParser.parseStatement(
-                                    stmt.toString().replaceAll(" ", "    ")
+                                    stmt.toString().replaceAll("([ab])", " ")
                             );
                             statements.set(i, indentedStatement);
                         }
@@ -87,6 +87,8 @@ public class JavaFormatter {
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         String print = LexicalPreservingPrinter.print(cu);
+
+        System.out.println(print); //DEBUG
 
         // Replace the file text with the formatted code
         //Use WriteCommandAction to ensure that this is run within a write action
