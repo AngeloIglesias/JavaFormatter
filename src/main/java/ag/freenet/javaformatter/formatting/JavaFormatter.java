@@ -8,6 +8,8 @@ package ag.freenet.javaformatter.formatting;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.comments.JavadocComment;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 
 import com.intellij.openapi.command.WriteCommandAction;
@@ -86,13 +88,30 @@ public class JavaFormatter
 			return;
 		}
 
-		// Enable lexical preserving printing (has to happen before manipulating the tree):
+		// Beispiel für eine Änderung: Hinzufügen eines Kommentars zu einer Methode
+		cu.findAll(MethodDeclaration.class).forEach(md ->
+			{
+				md.setComment(new JavadocComment("A new comment for the method"));
+			});
+
+		// Mit dem PrettyPrinter
+//		PrettyPrinter prettyPrinter = new PrettyPrinter(new PrettyPrinterConfiguration());
+//		String tmp = prettyPrinter.print(cu);
+
+		// Oder mit dem LexicalPreservingPrinter
+		LexicalPreservingPrinter.setup(cu);
+		String tmp = LexicalPreservingPrinter.print(cu);
+
+		String print = tmp.replace("\r\n", "\n"); // Dirty workaround, better use Java Method
+
+
+		/*// Enable lexical preserving printing (has to happen before manipulating the tree):
 		LexicalPreservingPrinter.setup(cu);
 
 		applyFormattingRules(cu);
 
 		// Print the formatted code
-		String print = LexicalPreservingPrinter.print(cu);
+		String print = LexicalPreservingPrinter.print(cu);*/
 
 		// Replace the file text with the formatted code
 		// Use WriteCommandAction to ensure that this is run within a write action
