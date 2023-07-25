@@ -52,7 +52,6 @@ public class CustomPrettyPrintVisitor extends PrettyPrintVisitor
 		super.visit(n, arg); // This will print the method declaration as usual.
 
 		// ToDo: JUST AN EXAMPLE
-		printer.println( /* THAT'S JUST NONESENSE */); // This will add a new line after the method
-                                                       // declaration.
+		printer.println( /* THAT'S JUST NONESENSE */);
 	}
 }
