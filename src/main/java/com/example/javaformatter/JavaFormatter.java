@@ -65,29 +65,50 @@ public class JavaFormatter {
             return;
         }
 
-        // Enable lexical preserving printing
-        LexicalPreservingPrinter.setup(cu);
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        String formattedCode = "";
+
+        try {
+
+            // Set the custom indentation settings in the parser configuration
+            ParserConfiguration parserConfiguration = new ParserConfiguration()
+                    .setTabSize(4);
+            JavaParser javaParser = new JavaParser(parserConfiguration);
+
+            // Parse the input Java code with the custom indentation settings
+            cu = javaParser.parse(cu.toString()).getResult().orElseThrow(() -> new ParseProblemException(new Exception())); //ToDo: Problems
+
+            // Setup the LexicalPreservingPrinter to preserve lexical formatting
+            LexicalPreservingPrinter.setup(cu);
+
+            // Get the method declaration node
+            MethodDeclaration methodDeclaration = cu.findFirst(MethodDeclaration.class).orElse(null);
+            if (methodDeclaration != null) {
+                // Change the indentation of the method body
+                methodDeclaration.getBody().get().findAll(MethodDeclaration.class).forEach(m ->
+                        m.setBlockComment(" This is a block comment\n    "));
+
+                // Print the formatted code with preserved lexical formatting
+                formattedCode = LexicalPreservingPrinter.print(cu);
+                System.out.println(formattedCode);
+            }
+        } catch (ParseProblemException e) {
+            e.printStackTrace();
+            // Handle parsing errors
+        }
+
+
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Set the custom indentation settings in the parser configuration
-        ParserConfiguration parserConfiguration = new ParserConfiguration()
-                .setTabSize(4);
-        JavaParser javaParser = new JavaParser(parserConfiguration);
-
-
-
-
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        String print2 = LexicalPreservingPrinter.print(cu);
-
-        System.out.println(print2); //DEBUG
+        String print = formattedCode;
 
         // Replace the file text with the formatted code
         //Use WriteCommandAction to ensure that this is run within a write action
         WriteCommandAction.runWriteCommandAction(file.getProject(), () ->
-                file.getViewProvider().getDocument().setText(print2)
+                file.getViewProvider().getDocument().setText(print)
         );
     }
 
