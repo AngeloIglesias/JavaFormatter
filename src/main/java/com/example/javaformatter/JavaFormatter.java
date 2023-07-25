@@ -115,9 +115,13 @@ public class JavaFormatter {
                 String code = stmt.toString();
                 String indentedCode = setIndentation(code, indentLevel);
                 Statement indentedStatement = StaticJavaParser.parseStatement(indentedCode);
+
+                // Copy the comment from the original statement to the new one
+                stmt.getComment().ifPresent(indentedStatement::setComment);
+
                 formattedStatements.add(indentedStatement);
             }
-//            blockStmtNode.setStatements(new NodeList<>(formattedStatements));
+            blockStmtNode.setStatements(new NodeList<>(formattedStatements));
         }
     }
 
