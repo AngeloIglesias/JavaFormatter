@@ -86,24 +86,26 @@ public class JavaFormatter
 			return;
 		}
 
-		// Enable lexical preserving printing
+		// Enable lexical preserving printing (has to happen before manipulating the tree):
 		LexicalPreservingPrinter.setup(cu);
 
-		String print = applyFormattingRules(cu);
+		applyFormattingRules(cu);
+
+		// Print the formatted code
+		String print = LexicalPreservingPrinter.print(cu);
 
 		// Replace the file text with the formatted code
 		// Use WriteCommandAction to ensure that this is run within a write action
 		WriteCommandAction.runWriteCommandAction(file.getProject(), () -> file.getViewProvider().getDocument().setText(print));
 	}
 
-	private static String applyFormattingRules(CompilationUnit cu)
+	private static void applyFormattingRules(CompilationUnit cu)
 	{
 		// Apply formatting rules
 		addCommentsToPublicMethods(cu);
 
-		// Print the formatted code
-		String print = LexicalPreservingPrinter.print(cu);
-		return print;
+
+		return;
 	}
 
 	public boolean isEnabled()
