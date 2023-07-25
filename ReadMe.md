@@ -3,6 +3,11 @@
 This plugin utilizes the JavaParser since it has the feature of "Lexical-Preseving Printing".
 
 ## Usage
+Open the project and run the plugin in IntelliJ
+
+![img_6.png](img_6.png)
+
+
 To start formatting you need to select Code -> Reformat with JavaFormatter:
 
 ![img_3.png](img_3.png)
