@@ -8,6 +8,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.InitializerDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.stmt.*;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
@@ -48,7 +49,7 @@ public class JavaFormatter {
 
         CompilationUnit cu;
 
-        System.out.println(file.getText()); //DEBUG
+//        System.out.println(file.getText()); //DEBUG
 
         // Parse the file with JavaParser
         try {
@@ -63,7 +64,29 @@ public class JavaFormatter {
         // Enable lexical preserving printing
         LexicalPreservingPrinter.setup(cu);
 
-        String print = applyFormattingRules(cu);
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        cu.findAll(MethodDeclaration.class).forEach(method -> {
+            method.getChildNodes().stream()
+                    .filter(child -> child instanceof BlockStmt)
+                    .map(child -> (BlockStmt) child)
+                    .forEach(block -> {
+                        NodeList<Statement> statements = block.getStatements();
+                        for (int i = 0; i < statements.size(); i++) {
+                            Statement stmt = statements.get(i);
+                            Statement indentedStatement = StaticJavaParser.parseStatement(
+                                    stmt.toString().replaceAll(" ", "    ")
+                            );
+                            statements.set(i, indentedStatement);
+                        }
+                    });
+        });
+
+
+
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        String print = LexicalPreservingPrinter.print(cu);
 
         // Replace the file text with the formatted code
         //Use WriteCommandAction to ensure that this is run within a write action
@@ -72,76 +95,6 @@ public class JavaFormatter {
         );
     }
 
-    private static String applyFormattingRules(CompilationUnit cu) {
-
-        // Format code:
-        processNode(cu, 0);
-
-        // Print the formatted code
-        String print = LexicalPreservingPrinter.print(cu);
-        return print;
-    }
-
-    public static void processNode(Node node, int indentLevel) {
-        // ToDo: if instanceof special node -> Rule Zuordnung
-
-        // Verarbeiten Sie nun alle Kinder des aktuellen Knotens
-        for (Node child : node.getChildNodes()) {
-            int newIndentLevel = getIndentLevel(child, indentLevel);
-            processNode(child, newIndentLevel);
-        }
-
-        postProcessNode(node, indentLevel);
-    }
-
-    /**
-     * Kann je nach Regeln angepasst werden, um die gewünschten Einrückungen (Indents) zu erhalten
-     */
-    private static int getIndentLevel(Node node, int currentIndentLevel) {
-        if (shouldIncreaseIndent(node)) {
-            return currentIndentLevel + 1;
-        }
-        return currentIndentLevel;
-    }
-
-    private static boolean shouldIncreaseIndent(Node node) {
-        return node instanceof BlockStmt;
-    }
-
-    public static void postProcessNode(Node node, int indentLevel) {
-        if (node instanceof BlockStmt blockStmtNode) {
-            List<Statement> formattedStatements = new ArrayList<>();
-            for (Statement stmt : blockStmtNode.getStatements()) {
-                String code = stmt.toString();
-                String indentedCode = setIndentation(code, indentLevel);
-                Statement indentedStatement = StaticJavaParser.parseStatement(indentedCode);
-
-                // Copy the comment from the original statement to the new one
-                stmt.getComment().ifPresent(indentedStatement::setComment);
-
-                formattedStatements.add(indentedStatement);
-            }
-            blockStmtNode.setStatements(new NodeList<>(formattedStatements));
-        }
-    }
-
-    private static String setIndentation(String code, int indentLevel) {
-        // Create indentation as a series of tabs:
-        String indentation = "\t".repeat(indentLevel);
-
-        // Break code into lines:
-        String[] lines = code.split("\n");
-
-        // Remove existing indentation and add desired indentation:
-        for (int i = 0; i < lines.length; i++) {
-            if (!lines[i].trim().isEmpty()) {  //keine Leerzeilen "einrücken"
-                lines[i] = lines[i].replaceAll("^\\s*", indentation);
-            }
-        }
-
-        // Join lines back together:
-        return String.join("\n", lines);
-    }
 
     public boolean isEnabled() {
         return enabled;
