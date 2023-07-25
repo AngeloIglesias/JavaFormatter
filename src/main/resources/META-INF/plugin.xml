@@ -25,18 +25,18 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        
+
     </extensions>
 
     <actions>
         <action id="JavaFormatterSettingsAction"
-                class="com.example.javaformatter.actions.JavaFormatterSettingsAction"
+                class="ag.freenet.javaformatter.actions.JavaFormatterSettingsAction"
                 text="Java Formatter Settings"
                 description="Open Java Formatter settings">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
         <action id="ReformatWithJavaFormatterAction"
-                class="com.example.javaformatter.actions.ReformatWithJavaFormatterAction"
+                class="ag.freenet.javaformatter.actions.ReformatWithJavaFormatterAction"
                 text="Reformat with JavaFormatter"
                 description="Reformat code with Java Formatter">
             <add-to-group group-id="CodeMenu" anchor="last"/>

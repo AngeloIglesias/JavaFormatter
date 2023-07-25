@@ -3,15 +3,15 @@
 //# Copyright (c) 1996-2023 by freenet DLS GmbH
 //# All rights reserved.
 //#***************************************************************************
-package com.example.javaformatter.actions;
-
-import com.example.javaformatter.formatting.JavaFormatter;
+package ag.freenet.javaformatter.actions;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.components.JBCheckBox;
+
+import ag.freenet.javaformatter.formatting.JavaFormatter;
 
 
 /********************************************************************

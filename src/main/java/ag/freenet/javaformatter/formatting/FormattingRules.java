@@ -3,7 +3,7 @@
 //# Copyright (c) 1996-2023 by freenet DLS GmbH
 //# All rights reserved.
 //#***************************************************************************
-package com.example.javaformatter.formatting;
+package ag.freenet.javaformatter.formatting;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;

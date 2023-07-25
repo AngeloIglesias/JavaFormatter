@@ -3,9 +3,7 @@
 //# Copyright (c) 1996-2023 by freenet DLS GmbH
 //# All rights reserved.
 //#***************************************************************************
-package com.example.javaformatter.formatting;
-
-import static com.example.javaformatter.formatting.FormattingRules.addCommentsToPublicMethods;
+package ag.freenet.javaformatter.formatting;
 
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
@@ -14,6 +12,8 @@ import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinte
 
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiFile;
+
+import static ag.freenet.javaformatter.formatting.FormattingRules.addCommentsToPublicMethods;
 
 
 /********************************************************************
