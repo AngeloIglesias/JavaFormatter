@@ -11,6 +11,8 @@ import com.github.javaparser.ast.body.InitializerDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.ArrayInitializerExpr;
 import com.github.javaparser.ast.stmt.*;
+import com.github.javaparser.printer.PrettyPrintVisitor;
+import com.github.javaparser.printer.configuration.PrettyPrinterConfiguration;
 import com.github.javaparser.printer.lexicalpreservation.LexicalPreservingPrinter;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.psi.PsiFile;
@@ -66,34 +68,25 @@ public class JavaFormatter {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        cu.findAll(MethodDeclaration.class).forEach(method -> {
-            method.getChildNodes().stream()
-                    .filter(child -> child instanceof BlockStmt)
-                    .map(child -> (BlockStmt) child)
-                    .forEach(block -> {
-                        NodeList<Statement> statements = block.getStatements();
-                        for (int i = 0; i < statements.size(); i++) {
-                            Statement stmt = statements.get(i);
-                            Statement indentedStatement = StaticJavaParser.parseStatement(
-                                    stmt.toString().replaceAll("([ab])", " ")
-                            );
-                            statements.set(i, indentedStatement);
-                        }
-                    });
-        });
+        // Reformat the code using PrettyPrintVisitor
+        PrettyPrintVisitor prettyPrintVisitor = new PrettyPrintVisitor(new PrettyPrinterConfiguration());
+        prettyPrintVisitor.visit(cu, null);
 
+        String print = prettyPrintVisitor.getSource();
 
+        // Replace Windows line separators with Unix line separators
+        String print2 = print.replace("\r\n", "\n");
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        String print = LexicalPreservingPrinter.print(cu);
+//        String print = LexicalPreservingPrinter.print(cu);
 
-        System.out.println(print); //DEBUG
+        System.out.println(print2); //DEBUG
 
         // Replace the file text with the formatted code
         //Use WriteCommandAction to ensure that this is run within a write action
         WriteCommandAction.runWriteCommandAction(file.getProject(), () ->
-                file.getViewProvider().getDocument().setText(print)
+                file.getViewProvider().getDocument().setText(print2)
         );
     }
 
