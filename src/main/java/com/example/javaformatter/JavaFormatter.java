@@ -1,7 +1,9 @@
 package com.example.javaformatter;
 
 import com.example.javaformatter.nodes.Clazz;
+import com.github.javaparser.JavaParser;
 import com.github.javaparser.ParseProblemException;
+import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
@@ -68,18 +70,17 @@ public class JavaFormatter {
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Reformat the code using PrettyPrintVisitor
-        PrettyPrintVisitor prettyPrintVisitor = new PrettyPrintVisitor(new PrettyPrinterConfiguration());
-        prettyPrintVisitor.visit(cu, null);
+        // Set the custom indentation settings in the parser configuration
+        ParserConfiguration parserConfiguration = new ParserConfiguration()
+                .setTabSize(4);
+        JavaParser javaParser = new JavaParser(parserConfiguration);
 
-        String print = prettyPrintVisitor.getSource();
 
-        // Replace Windows line separators with Unix line separators
-        String print2 = print.replace("\r\n", "\n");
+
 
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-//        String print = LexicalPreservingPrinter.print(cu);
+        String print2 = LexicalPreservingPrinter.print(cu);
 
         System.out.println(print2); //DEBUG
 
